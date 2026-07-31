@@ -941,11 +941,85 @@
         transition: none !important;
       }
     }
+
+    /* Popup */
+    .certificate-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: .3s ease;
+      z-index: 9999;
+    }
+
+    .certificate-popup.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-content {
+      width: min(850px, 90%);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #fff;
+      padding: 35px;
+      position: relative;
+    }
+
+    .popup-content h2 {
+      margin-bottom: 10px;
+    }
+
+    .popup-content p {
+      margin-bottom: 25px;
+      color: #666;
+    }
+
+    .close-popup {
+      position: absolute;
+      top: 3px;
+      right: 10px;
+      border: none;
+      background: none;
+      font-size: 35px;
+      cursor: pointer;
+    }
+
+    .certificate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .certificate-item img {
+      width: 100%;
+      display: block;
+      border: 1px solid #ddd;
+      transition: .3s;
+    }
+
+    .certificate-item img:hover {
+      transform: scale(1.03);
+    }
+
+    /* popup end  */
+    #fireworks{
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    height: 100vh;
+    width: 100%;
+}
   </style>
 </head>
 
 <body>
-
+  <canvas id="fireworks"></canvas>
   <div class="grid-bg" id="gridBg"></div>
   <div class="vignette"></div>
 
@@ -976,11 +1050,28 @@
     </div>
 
     <div class="my-image">
-     <img src="assets/img/Mohd-Ehtesham.png" alt="Mohd Ehtesham">
+       <img src="assets/img/Mohd-Ehtesham.png" alt="Mohd Ehtesham">
 
     </div>
 
   </header>
+
+  <!-- ================= CERTIFICATE POPUP ================= -->
+  <div class="certificate-popup" id="certificatePopup">
+    <div class="popup-content">
+
+      <button class="close-popup" id="closeCertificate">&times;</button>
+
+      <div class="certificate-grid">
+
+        <div class="certificate-item">
+          <img src="./Certificate.png" alt="Certificate 1">
+        </div>
+
+      </div>
+
+    </div>
+  </div>
 
   <!-- ================= ABOUT ================= -->
   <section class="section" id="about">
@@ -1267,8 +1358,76 @@
       });
     }, {threshold: 0.12});
     revealEls.forEach(el => io.observe(el));
-  </script>
 
+    // Popup
+    const popup = document.getElementById("certificatePopup");
+    const closeBtn = document.getElementById("closeCertificate");
+
+    function openPopup() {
+      popup.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closePopup() {
+      popup.classList.remove("active");
+      document.body.style.overflow = "";
+
+      // 5 minutes baad fir open hoga
+      setTimeout(openPopup, 5 * 60 * 1000);
+    }
+
+    // Website open hone ke 5 second baad
+    window.addEventListener("load", () => {
+      setTimeout(openPopup, 5000);
+    });
+
+    closeBtn.addEventListener("click", closePopup);
+
+    // Popup ke bahar click
+    popup.addEventListener("click", function (e) {
+      if (e.target === popup) {
+        closePopup();
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
+  <script>
+    const container = document.querySelector('#fireworks');
+
+    const fireworks = new Fireworks.default(container, {
+      autoresize: true,
+      opacity: 1,
+      acceleration: 1.01,
+      friction: 0.995,
+      gravity: 0.8,
+
+      particles: 100,
+      traceLength: 4,
+      traceSpeed: 2,
+
+      explosion: 6,
+      intensity: 25,
+
+      flickering: 20,
+
+      hue: {
+        min: 0,
+        max: 360
+      },
+
+      delay: {
+        min: 20,
+        max: 40
+      },
+
+      rocketsPoint: {
+        min: 20,
+        max: 80
+      }
+    });
+
+    fireworks.start();
+  </script>
 </body>
 
 </html>
